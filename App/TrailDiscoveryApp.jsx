@@ -52,54 +52,10 @@ const designSystem = {
   },
 };
 
-// Sample Data for Trails
-const trails = [
-  {
-    id: '1',
-    title: 'Mystic Forest Trail',
-    location: 'Elvenwood',
-    image: 'https://images.unsplash.com/photo-1533227481913-4a11f935b035?q=80&w=2070&auto=format&fit=crop',
-    rating: 4.8,
-    difficulty: 'Moderate',
-    category: 'Hiking',
-  },
-  {
-    id: '2',
-    title: 'Coastal Cliff Walk',
-    location: 'Seaside',
-    image: 'https://images.unsplash.com/photo-1507525428034-b723a9ce6890?q=80&w=2070&auto=format&fit=crop',
-    rating: 4.5,
-    difficulty: 'Easy',
-    category: 'Hiking',
-  },
-  {
-    id: '3',
-    title: 'Mountain Peak Ascent',
-    location: 'Dragon\'s Tooth',
-    image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=2070&auto=format&fit=crop',
-    rating: 4.9,
-    difficulty: 'Hard',
-    category: 'Mountains',
-  },
-  {
-    id: '4',
-    title: 'Riverside Path',
-    location: 'Glimmerwood',
-    image: 'https://images.unsplash.com/photo-1476231682828-37e571bc172f?q=80&w=1974&auto=format&fit=crop',
-    rating: 4.2,
-    difficulty: 'Easy',
-    category: 'Rivers',
-  },
-];
+// --- Reusable Components ---
 
-const categories = ['All', 'Hiking', 'Mountains', 'Rivers', 'Caves'];
-
-const App = () => {
-  const [activeCategory, setActiveCategory] = useState('All');
-  const [activeTab, setActiveTab] = useState('map');
-
-  // Component: Search Bar
-  const SearchBar = () => (
+// Component: Search Bar
+const SearchBar = () => (
     <View style={styles.searchBarContainer}>
       <Feather name="search" size={20} color={designSystem.colorPalette.text.muted} />
       <TextInput
@@ -108,35 +64,10 @@ const App = () => {
         style={styles.searchBarInput}
       />
     </View>
-  );
+);
 
-  // Component: Navigation Tabs
-  const NavigationTabs = () => (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.navTabsContainer}>
-      {categories.map((category) => (
-        <TouchableOpacity key={category} onPress={() => setActiveCategory(category)}>
-          <View
-            style={[
-              styles.navTab,
-              activeCategory === category ? styles.navTabActive : styles.navTabInactive,
-            ]}
-          >
-            <Text
-              style={[
-                styles.navTabText,
-                activeCategory === category ? styles.navTabTextActive : styles.navTabTextInactive,
-              ]}
-            >
-              {category}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
-  );
-
-  // Component: Trail Card
-  const TrailCard = ({ trail }) => (
+// Component: Trail Card
+const TrailCard = ({ trail }) => (
     <ImageBackground
       source={{ uri: trail.image }}
       style={styles.card}
@@ -161,11 +92,125 @@ const App = () => {
         </View>
       </View>
     </ImageBackground>
-  );
+);
+
+
+// --- Screen Components ---
+
+// Discover Screen: The main screen with the trail list
+const DiscoverScreen = ({ activeCategory, setActiveCategory }) => {
+    const categories = ['All', 'Hiking', 'Mountains', 'Rivers', 'Caves'];
+    const trails = [
+        { id: '1', title: 'Mystic Forest Trail', location: 'Elvenwood', image: 'https://images.unsplash.com/photo-1533227481913-4a11f935b035?q=80&w=2070&auto=format&fit=crop', rating: 4.8, difficulty: 'Moderate', category: 'Hiking' },
+        { id: '2', title: 'Coastal Cliff Walk', location: 'Seaside', image: 'https://images.unsplash.com/photo-1507525428034-b723a9ce6890?q=80&w=2070&auto=format&fit=crop', rating: 4.5, difficulty: 'Easy', category: 'Hiking' },
+        { id: '3', title: 'Mountain Peak Ascent', location: 'Dragon\'s Tooth', image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=2070&auto=format&fit=crop', rating: 4.9, difficulty: 'Hard', category: 'Mountains' },
+        { id: '4', title: 'Riverside Path', location: 'Glimmerwood', image: 'https://images.unsplash.com/photo-1476231682828-37e571bc172f?q=80&w=1974&auto=format&fit=crop', rating: 4.2, difficulty: 'Easy', category: 'Rivers' },
+        { id: '5', title: 'Crystal Caverns', location: 'Underdark', image: 'https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?q=80&w=2070&auto=format&fit=crop', rating: 4.6, difficulty: 'Moderate', category: 'Caves' },
+        { id: '6', title: 'Redwood Giants Trail', location: 'Giant\'s Forest', image: 'https://images.unsplash.com/photo-1542848123-b1479824d642?q=80&w=1974&auto=format&fit=crop', rating: 4.9, difficulty: 'Easy', category: 'Hiking' },
+    ];
+    
+    const filteredTrails = activeCategory === 'All'
+        ? trails
+        : trails.filter(trail => trail.category === activeCategory);
+
+    // Component: Navigation Tabs for categories
+    const NavigationTabs = () => (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.navTabsContainer}>
+          {categories.map((category) => (
+            <TouchableOpacity key={category} onPress={() => setActiveCategory(category)}>
+              <View
+                style={[
+                  styles.navTab,
+                  activeCategory === category ? styles.navTabActive : styles.navTabInactive,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.navTabText,
+                    activeCategory === category ? styles.navTabTextActive : styles.navTabTextInactive,
+                  ]}
+                >
+                  {category}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+    );
+
+    return (
+        <>
+            {/* Header */}
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>Discover</Text>
+                <SearchBar />
+            </View>
+            {/* Content */}
+            <ScrollView style={styles.contentScrollView}>
+                <NavigationTabs />
+                <Text style={styles.sectionTitle}>Popular Trails</Text>
+                {filteredTrails.map(trail => <TrailCard key={trail.id} trail={trail} />)}
+                {/* This empty view adds space at the bottom so the last card isn't hidden by the nav bar */}
+                <View style={{height: 100}}/>
+            </ScrollView>
+        </>
+    );
+};
+
+// Placeholder for the Map screen
+const MapScreen = () => (
+    <View style={styles.placeholderContainer}>
+        <Feather name="map" size={48} color={designSystem.colorPalette.text.muted} />
+        <Text style={styles.placeholderText}>Map Screen</Text>
+    </View>
+);
+
+// Placeholder for the Saved Trails screen
+const SavedScreen = () => (
+    <View style={styles.placeholderContainer}>
+        <Feather name="bookmark" size={48} color={designSystem.colorPalette.text.muted} />
+        <Text style={styles.placeholderText}>Saved Trails</Text>
+    </View>
+);
+
+// Placeholder for the Profile screen
+const ProfileScreen = () => (
+    <View style={styles.placeholderContainer}>
+        <Feather name="user" size={48} color={designSystem.colorPalette.text.muted} />
+        <Text style={styles.placeholderText}>Profile Screen</Text>
+    </View>
+);
+
+
+// --- Main App Component ---
+
+const App = () => {
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeTab, setActiveTab] = useState('discover'); // Changed default to discover
+
+  // Renders the currently active screen based on the activeTab state
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'map':
+        return <MapScreen />;
+      case 'bookmark':
+        return <SavedScreen />;
+      case 'discover':
+        return <DiscoverScreen activeCategory={activeCategory} setActiveCategory={setActiveCategory} />;
+      case 'user':
+        return <ProfileScreen />;
+      default:
+        return <DiscoverScreen activeCategory={activeCategory} setActiveCategory={setActiveCategory} />;
+    }
+  };
 
   // Component: Bottom Navigation Bar
   const BottomNav = () => (
     <View style={styles.bottomNav}>
+      <TouchableOpacity onPress={() => setActiveTab('discover')} style={styles.bottomNavItem}>
+        <MaterialCommunityIcons name="compass-outline" size={24} color={activeTab === 'discover' ? designSystem.colorPalette.interactive.selected : designSystem.colorPalette.interactive.unselected} />
+        <Text style={[styles.bottomNavText, {color: activeTab === 'discover' ? designSystem.colorPalette.interactive.selected : designSystem.colorPalette.interactive.unselected}]}>Discover</Text>
+      </TouchableOpacity>
       <TouchableOpacity onPress={() => setActiveTab('map')} style={styles.bottomNavItem}>
         <Feather name="map" size={24} color={activeTab === 'map' ? designSystem.colorPalette.interactive.selected : designSystem.colorPalette.interactive.unselected} />
         <Text style={[styles.bottomNavText, {color: activeTab === 'map' ? designSystem.colorPalette.interactive.selected : designSystem.colorPalette.interactive.unselected}]}>Map</Text>
@@ -174,10 +219,6 @@ const App = () => {
         <Feather name="bookmark" size={24} color={activeTab === 'bookmark' ? designSystem.colorPalette.interactive.selected : designSystem.colorPalette.interactive.unselected} />
          <Text style={[styles.bottomNavText, {color: activeTab === 'bookmark' ? designSystem.colorPalette.interactive.selected : designSystem.colorPalette.interactive.unselected}]}>Saved</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setActiveTab('discover')} style={styles.bottomNavItem}>
-        <MaterialCommunityIcons name="compass-outline" size={24} color={activeTab === 'discover' ? designSystem.colorPalette.interactive.selected : designSystem.colorPalette.interactive.unselected} />
-         <Text style={[styles.bottomNavText, {color: activeTab === 'discover' ? designSystem.colorPalette.interactive.selected : designSystem.colorPalette.interactive.unselected}]}>Discover</Text>
-      </TouchableOpacity>
       <TouchableOpacity onPress={() => setActiveTab('user')} style={styles.bottomNavItem}>
         <Feather name="user" size={24} color={activeTab === 'user' ? designSystem.colorPalette.interactive.selected : designSystem.colorPalette.interactive.unselected} />
          <Text style={[styles.bottomNavText, {color: activeTab === 'user' ? designSystem.colorPalette.interactive.selected : designSystem.colorPalette.interactive.unselected}]}>Profile</Text>
@@ -185,50 +226,38 @@ const App = () => {
     </View>
   );
 
-
-  const filteredTrails = activeCategory === 'All'
-    ? trails
-    : trails.filter(trail => trail.category === activeCategory);
-
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="light-content" />
       <View style={styles.container}>
-        {/* Header */}
-        <View style={styles.header}>
-            <Text style={styles.headerTitle}>Discover</Text>
-            <SearchBar />
-        </View>
+        {/* The main content area which switches between screens */}
+        {renderContent()}
 
-        {/* Content */}
-        <ScrollView style={styles.content}>
-            <NavigationTabs />
-            <Text style={styles.sectionTitle}>Popular Trails</Text>
-            {filteredTrails.map(trail => <TrailCard key={trail.id} trail={trail} />)}
-            <View style={{height: 100}}/>
-        </ScrollView>
-
-        {/* Footer */}
+        {/* The bottom navigation is always visible */}
         <BottomNav />
       </View>
     </SafeAreaView>
   );
 };
 
+// --- Styles ---
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: designSystem.colorPalette.primary.background,
+    // Use padding top for Android status bar height
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   container: {
     flex: 1,
     backgroundColor: designSystem.colorPalette.primary.background,
   },
+  // Header styles (used in Discover screen)
   header: {
     paddingHorizontal: designSystem.spacing.md,
-    paddingVertical: designSystem.spacing.md,
+    paddingTop: designSystem.spacing.md,
+    paddingBottom: designSystem.spacing.sm, // Reduced bottom padding
   },
   headerTitle: {
     ...designSystem.typography.hero,
@@ -249,9 +278,11 @@ const styles = StyleSheet.create({
     color: designSystem.colorPalette.text.primary,
     marginLeft: designSystem.spacing.sm,
   },
-  content: {
+  // Scrollable content view
+  contentScrollView: {
     paddingHorizontal: designSystem.spacing.md,
   },
+  // Category tabs
   navTabsContainer: {
     marginVertical: designSystem.spacing.md,
   },
@@ -285,6 +316,7 @@ const styles = StyleSheet.create({
     color: designSystem.colorPalette.text.primary,
     marginVertical: designSystem.spacing.md,
   },
+  // Trail Card styles
   card: {
     height: 200,
     justifyContent: 'flex-end',
@@ -333,6 +365,7 @@ const styles = StyleSheet.create({
     color: designSystem.colorPalette.text.primary,
     marginLeft: designSystem.spacing.xs,
   },
+  // Bottom Navigation
   bottomNav: {
     height: 80,
     backgroundColor: designSystem.colorPalette.primary.background,
@@ -354,6 +387,18 @@ const styles = StyleSheet.create({
     ...designSystem.typography.caption,
     marginTop: designSystem.spacing.xs,
   },
+  // Placeholder styles for new screens
+  placeholderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: designSystem.colorPalette.primary.background,
+  },
+  placeholderText: {
+    ...designSystem.typography.title,
+    color: designSystem.colorPalette.text.muted,
+    marginTop: designSystem.spacing.md,
+  }
 });
 
-export default App; 
+export default App;
