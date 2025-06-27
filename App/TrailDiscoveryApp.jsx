@@ -7,11 +7,11 @@ import {
   TextInput,
   ImageBackground,
   TouchableOpacity,
-  SafeAreaView,
   Platform,
   StatusBar,
 } from 'react-native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Design System Configuration from the JSON file
 const designSystem = {
@@ -142,7 +142,6 @@ const DiscoverScreen = ({ activeCategory, setActiveCategory }) => {
         <>
             {/* Header */}
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>Discover</Text>
                 <SearchBar />
             </View>
             {/* Content */}
@@ -184,9 +183,10 @@ const ProfileScreen = () => (
 
 // --- Main App Component ---
 
-const App = () => {
+const TrailDiscoveryApp = () => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeTab, setActiveTab] = useState('discover'); // Changed default to discover
+  const insets = useSafeAreaInsets();
 
   // Renders the currently active screen based on the activeTab state
   const renderContent = () => {
@@ -206,7 +206,7 @@ const App = () => {
 
   // Component: Bottom Navigation Bar
   const BottomNav = () => (
-    <View style={styles.bottomNav}>
+    <View style={[styles.bottomNav, { height: 80 + insets.bottom, paddingBottom: insets.bottom }]}>
       <TouchableOpacity onPress={() => setActiveTab('discover')} style={styles.bottomNavItem}>
         <MaterialCommunityIcons name="compass-outline" size={24} color={activeTab === 'discover' ? designSystem.colorPalette.interactive.selected : designSystem.colorPalette.interactive.unselected} />
         <Text style={[styles.bottomNavText, {color: activeTab === 'discover' ? designSystem.colorPalette.interactive.selected : designSystem.colorPalette.interactive.unselected}]}>Discover</Text>
@@ -227,28 +227,20 @@ const App = () => {
   );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <StatusBar barStyle="light-content" />
-      <View style={styles.container}>
-        {/* The main content area which switches between screens */}
-        {renderContent()}
+      {/* The main content area which switches between screens */}
+      {renderContent()}
 
-        {/* The bottom navigation is always visible */}
-        <BottomNav />
-      </View>
-    </SafeAreaView>
+      {/* The bottom navigation is always visible */}
+      <BottomNav />
+    </View>
   );
 };
 
 // --- Styles ---
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: designSystem.colorPalette.primary.background,
-    // Use padding top for Android status bar height
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-  },
   container: {
     flex: 1,
     backgroundColor: designSystem.colorPalette.primary.background,
@@ -258,11 +250,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: designSystem.spacing.md,
     paddingTop: designSystem.spacing.md,
     paddingBottom: designSystem.spacing.sm, // Reduced bottom padding
-  },
-  headerTitle: {
-    ...designSystem.typography.hero,
-    color: designSystem.colorPalette.text.primary,
-    marginBottom: designSystem.spacing.md,
   },
   searchBarContainer: {
     flexDirection: 'row',
@@ -367,7 +354,6 @@ const styles = StyleSheet.create({
   },
   // Bottom Navigation
   bottomNav: {
-    height: 80,
     backgroundColor: designSystem.colorPalette.primary.background,
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -378,14 +364,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    paddingBottom: Platform.OS === 'ios' ? 20 : 0,
   },
   bottomNavItem: {
     alignItems: 'center',
   },
   bottomNavText: {
     ...designSystem.typography.caption,
-    marginTop: designSystem.spacing.xs,
+    marginTop: designSystem.spacing.md,
   },
   // Placeholder styles for new screens
   placeholderContainer: {
@@ -401,4 +386,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default App;
+export default TrailDiscoveryApp;
